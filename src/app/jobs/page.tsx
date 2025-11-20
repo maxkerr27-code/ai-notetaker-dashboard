@@ -1,20 +1,13 @@
-import JobDrawer from "@/components/JobDrawer";
+import JobsDashboard from "@/components/JobsDashboard";
 
 async function fetchJobs() {
-  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
-  const apiKey = process.env.NEXT_PUBLIC_API_KEY;
-
-  if (!apiBase) throw new Error("Missing NEXT_PUBLIC_API_BASE_URL");
-  if (!apiKey) throw new Error("Missing NEXT_PUBLIC_API_KEY");
+  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL!;
+  const apiKey = process.env.NEXT_PUBLIC_API_KEY!;
 
   const res = await fetch(`${apiBase}/jobs`, {
     cache: "no-store",
-    headers: {
-      "x-api-key": apiKey,
-    },
+    headers: { "x-api-key": apiKey },
   });
-
-  if (!res.ok) throw new Error("Failed to fetch jobs");
 
   const data = await res.json();
   return Array.isArray(data.jobs) ? data.jobs : data;
@@ -42,5 +35,5 @@ function mapRowToJob(row: any[]) {
 
 export default async function JobsPage() {
   const jobs = (await fetchJobs()).map(mapRowToJob);
-  return <JobDrawer jobs={jobs} />;
+  return <JobsDashboard jobs={jobs} />;
 }
